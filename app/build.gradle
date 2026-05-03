@@ -1,0 +1,19 @@
+plugins { id 'com.android.application' }
+
+android {
+    namespace 'com.mohaskull.signalplus'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.mohaskull.signalplus'
+        minSdk 23
+        targetSdk 35
+        versionCode 200
+        versionName '2.0.0'
+    }
+
+    buildTypes {
+        debug { debuggable true; minifyEnabled false; shrinkResources false }
+        release { minifyEnabled false; shrinkResources false }
+    }
+}
