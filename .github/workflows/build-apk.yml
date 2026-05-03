@@ -1,0 +1,45 @@
+name: Build Signal Plus Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.7
+
+      - name: Build Debug APK
+        run: gradle :app:assembleDebug --no-daemon
+
+      - name: Validate APK
+        run: |
+          APK="app/build/outputs/apk/debug/app-debug.apk"
+          ls -lh "$APK"
+          test -f "$APK"
+          test $(stat -c%s "$APK") -gt 20000
+
+      - name: Rename APK
+        run: |
+          mkdir -p release
+          cp app/build/outputs/apk/debug/app-debug.apk release/SignalPlus-Android-v2.0-debug.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SignalPlus-Android-APK-v2.0
+          path: release/SignalPlus-Android-v2.0-debug.apk
